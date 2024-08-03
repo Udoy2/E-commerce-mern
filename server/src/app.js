@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const createError = require('http-errors');
 // const xssClean = require('xss-clean')
-const rateLimit = require('express-rate-limit')
+const rateLimit = require('express-rate-limit');
+const { userRouter } = require('./routers/userRouter');
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
     max: 5,
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.get("/",(req,res)=>{
     res.send("welcome getta")
 })
+app.use('/api/users',userRouter)
 app.use((req,res,next)=>{
     next(createError(404,'route not found'))
 })
