@@ -52,5 +52,5 @@ const useSchema = new Schema({
     }
 },{timestamps:true})
 
-const user = model('Users',useSchema);
-module.exports = user
+const User = model('Users',useSchema);
+module.exports = User
