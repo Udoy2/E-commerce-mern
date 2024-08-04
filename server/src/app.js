@@ -5,6 +5,7 @@ const createError = require('http-errors');
 // const xssClean = require('xss-clean')
 const rateLimit = require('express-rate-limit');
 const { userRouter } = require('./routers/userRouter');
+const { seedRouter } = require('./routers/seedRouter');
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
     max: 5,
@@ -21,6 +22,7 @@ app.get("/",(req,res)=>{
     res.send("welcome getta")
 })
 app.use('/api/users',userRouter)
+app.use('/api/seed',seedRouter)
 app.use((req,res,next)=>{
     next(createError(404,'route not found'))
 })
