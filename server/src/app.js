@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const rateLimit = require('express-rate-limit');
 const { userRouter } = require('./routers/userRouter');
 const { seedRouter } = require('./routers/seedRouter');
+const { errorResponse } = require('./controller/responseController');
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
     max: 5,
@@ -27,9 +28,9 @@ app.use((req,res,next)=>{
     next(createError(404,'route not found'))
 })
 app.use((err,req,res,next)=>{
-    return res.status(err.status || 500).json({
-        success: false,
-        message: err.message,
+    return errorResponse(res,{
+        statusCode: err.status,
+        message: err.message
     })    
 })
 module.exports = {app}
