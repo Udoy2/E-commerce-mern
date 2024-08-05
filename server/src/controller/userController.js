@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
+const { default: mongoose } = require("mongoose");
 
 const getUsers = async (req, res, next) => {
     try {
@@ -42,5 +43,27 @@ const getUsers = async (req, res, next) => {
         next(error)
     }
 }
+const getUser = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const options = {password:0};
+        const user = await User.findById(id,options);
+        if (!user) throw createHttpError(404, "user does not exit with this id");
 
-module.exports = { getUsers }
+        return successResponse(res,{
+            statusCode: 200,
+            message:"user were returned Successfully",
+            payload: {
+                user
+            }
+        })
+    } catch (error) {
+        if(error  instanceof mongoose.Error){
+            next(createHttpError(400,"Invalid User Id"));
+            return;
+        }
+        next(error)
+    }
+}
+
+module.exports = { getUsers,getUser }
