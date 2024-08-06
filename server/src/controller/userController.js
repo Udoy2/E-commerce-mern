@@ -3,7 +3,7 @@ const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
 const { default: mongoose } = require("mongoose");
 const { findWithID } = require("../services/findWithID");
-const fs = require('fs')
+
 const getUsers = async (req, res, next) => {
     try {
         const search = req.query.search || "";
@@ -48,7 +48,7 @@ const getUser = async (req, res, next) => {
     try {
         const id = req.params.id;
         const option = {password:0}
-        const user = await findWithID(id,{options:option})
+        const user = await findWithID( User, id,{options:option})
         return successResponse(res,{
             statusCode: 200,
             message:"user were returned Successfully",
@@ -64,20 +64,9 @@ const deleteUser = async (req, res, next) => {
     try {
         const id = req.params.id;
         const option = {password:0}
-        const user = await findWithID(id,{options:option})
+        const user = await findWithID(User,id,{options:option})
         const userImagePath = user.image;
-        fs.access(userImagePath,(err)=>{
-            if(err){
-                console.error('user image does not exits');
-                
-            }else{
-                fs.unlink(userImagePath,(err)=>{
-                    if(err) throw err;
-                    console.log("usr image was deleted");
-                    
-                })
-            }
-        });
+        deleteUser();
         await User.findByIdAndDelete({_id:id,isAdmin:false});
         return successResponse(res,{
             statusCode: 200,
