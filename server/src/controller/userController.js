@@ -7,7 +7,7 @@ const { deleteImage } = require("../helper/deleteImage");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
 const { jwtActivationKey, clientUrl } = require("../secret");
 const { emailWithNodeMailer } = require("../helper/email");
-
+const jwt = require("jsonwebtoken");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
@@ -123,4 +123,31 @@ const processRegister = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { getUsers, getUser, deleteUser, processRegister };
+const activateUserAccount = async (req, res, next) => {
+  try {
+    const token = req.body.token;
+
+    if (!token) throw createHttpError(404, "Token not found!");
+    const decoded = jwt.verify(token, jwtActivationKey);
+    const userExists = await User.exists({ email: decoded.email });
+    if (userExists)
+      throw createHttpError(
+        409,
+        "User with this already exists, Please log in"
+      );
+    await User.create(decoded);
+    return successResponse(res, {
+      statusCode: 201,
+      message: "user was registered successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = {
+  getUsers,
+  getUser,
+  deleteUser,
+  processRegister,
+  activateUserAccount,
+};
