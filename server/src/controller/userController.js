@@ -4,6 +4,8 @@ const { successResponse } = require("./responseController");
 const { default: mongoose } = require("mongoose");
 const { findWithID } = require("../services/findWithID");
 const { deleteImage } = require("../helper/deleteImage");
+const { createJSONWebToken } = require("../helper/jsonwebtoken");
+const { jwtActivationKey } = require("../secret");
 
 const getUsers = async (req, res, next) => {
     try {
@@ -83,17 +85,17 @@ const processRegister = async (req, res, next) => {
         const {name,email,password,phone,address} = req.body;
         const userExists = await User.exists({email:email});
         if(userExists) throw createHttpError(409,"User with this already exists, Please log in");
-        const newUser = {
-            name,
-            email,
-            password,
-            phone,
-            address
-        }
+        
+        // create jwt
+        const token = createJSONWebToken({name,email,password,phone,address},jwtActivationKey,'10m')
+        console.log(req.body);
+        
         return successResponse(res,{
             statusCode: 200,
             message:"user was created Successfully",
-            payload: {newUser}
+            payload:{
+                token,
+            }
         })
     } catch (error) {
         next(error)
