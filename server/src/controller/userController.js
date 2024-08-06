@@ -3,6 +3,7 @@ const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
 const { default: mongoose } = require("mongoose");
 const { findWithID } = require("../services/findWithID");
+const { deleteImage } = require("../helper/deleteImage");
 
 const getUsers = async (req, res, next) => {
     try {
@@ -66,7 +67,7 @@ const deleteUser = async (req, res, next) => {
         const option = {password:0}
         const user = await findWithID(User,id,{options:option})
         const userImagePath = user.image;
-        deleteUser();
+        deleteImage();
         await User.findByIdAndDelete({_id:id,isAdmin:false});
         return successResponse(res,{
             statusCode: 200,
