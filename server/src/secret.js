@@ -6,9 +6,7 @@ const jwtActivationKey = process.env.JWT_ACTIVATION_KEY || "DUMMY"
 const smtpUsername = process.env.SMTP_USERNAME || ""
 const smtpPasword = process.env.SMTP_PASSWORD || ""
 const clientUrl = process.env.CLIENT_URL || ""
-const uploadDirectory = process.env.UPLOAD_FILE || "public/images/users"
-const maxFileSize = (Number(process.env.MAX_FILE_SIZE) *1024*1024) || (1024*1024*2)
-const allowedFileTypes = String(process.env.ALLOWED_FILE_TYPES).split(',') || ['jpg','jpeg','png']
+
 module.exports = {
     serverPort,
     mongodbURL,
@@ -17,7 +15,5 @@ module.exports = {
     smtpUsername,
     smtpPasword,
     clientUrl,
-    uploadDirectory,
-    maxFileSize,
-    allowedFileTypes
+
 }
