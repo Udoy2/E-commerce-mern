@@ -23,8 +23,7 @@ const fileFilter = (req, file, cb) => {
   console.log(ALLOWED_FILE_TYPES);
 
   if (!ALLOWED_FILE_TYPES.includes(extname.substring(1))) {
-    const error = createHttpError(400, "File type not allowed");
-    return cb(error);
+    return cb(new Error("File type not allowed"), false);
   }
   cb(null, true);
 };
