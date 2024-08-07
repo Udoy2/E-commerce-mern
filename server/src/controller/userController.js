@@ -101,13 +101,12 @@ const processRegister = async (req, res, next) => {
       email,
       subject: "Account Activation Email",
       html: `
-                <h2> Hello ${name} <h2>
-                <p> Please Click here to <a href="${clientUrl}/api/users/activate/${token} target='_blank'"> activate </a> </p>
-            
+              <h2> Hello ${name} <h2>
+              <p> Please Click here to <a href="${clientUrl}/api/users/activate/${token} target='_blank'"> activate </a> </p>
             `,
     };
     try {
-      emailWithNodeMailer(emailData);
+      // emailWithNodeMailer(emailData);
     } catch (error) {
       next(createHttpError(500, "Failed to send verification email"));
     }
