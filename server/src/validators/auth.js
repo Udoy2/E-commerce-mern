@@ -38,8 +38,12 @@ const validateUserRegistration = [
 
 
     body("image")
-    .optional()
-    .isString()
+    .custom((value,{req})=>{
+        if(!req.file || !req.file.buffer){
+            throw new Error('User image is required');
+        }
+        return true;
+    })
     .withMessage("Phone is required"),
 
 ]
