@@ -148,6 +148,7 @@ const activateUserAccount = async (req, res, next) => {
 const updateUserById = async (req, res, next) => {
   try {
     const userID = req.params.id;
+    await findWithID(User,userID,{})
     const updateOptions = { new:true,runValidators:true,context: 'query'};
     const updates = {};
     if(req.body.name){
@@ -166,13 +167,22 @@ const updateUserById = async (req, res, next) => {
 
     const image = req.file;
     if(image){
-      // image size maximum 2mb
+      if(image.size > 2*1024*1024){
+        throw createHttpError(400,'Image file cant exceede 2mb')
+      }
+      updates.image = image.buffer.toString('base64')
     }
+
+    const updatedUser = await User.findByIdAndUpdate(userID,updates,updateOptions);
+    if(!updatedUser){
+      throw createHttpError(404,'User does not exists')
+    }
+    
 
     return successResponse(res, {
       statusCode: 200,
       message: "user were updated Successfully",
-      payload:{}
+      payload:updatedUser
     });
   } catch (error) {
     next(error);

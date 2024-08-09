@@ -10,6 +10,6 @@ userRouter.get('/:id',getUser)
 userRouter.post('/process-register',upload.single("image"),validateUserRegistration,runValidation,processRegister)
 userRouter.post('/verify',activateUserAccount)
 userRouter.delete('/:id',deleteUser)
-userRouter.put('/:id',updateUserById)
+userRouter.put('/:id',upload.single("image"),updateUserById)
 
 module.exports = {userRouter}
