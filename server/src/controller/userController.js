@@ -82,7 +82,7 @@ const deleteUser = async (req, res, next) => {
 const processRegister = async (req, res, next) => {
   try {
     const { name, email, password, phone, address } = req.body;
-    const imageBufferString = req.file.buffer.toString('base64');
+    const imageBufferString = req.file.buffer.toString("base64");
 
     const userExists = await User.exists({ email: email });
     if (userExists)
@@ -93,7 +93,7 @@ const processRegister = async (req, res, next) => {
 
     // create jwt
     const token = createJSONWebToken(
-      { name, email, password, phone, address,image:imageBufferString },
+      { name, email, password, phone, address, image: imageBufferString },
       jwtActivationKey,
       "10m"
     );
@@ -148,41 +148,45 @@ const activateUserAccount = async (req, res, next) => {
 const updateUserById = async (req, res, next) => {
   try {
     const userID = req.params.id;
-    await findWithID(User,userID,{})
-    const updateOptions = { new:true,runValidators:true,context: 'query'};
+    await findWithID(User, userID, {});
+    const updateOptions = { new: true, runValidators: true, context: "query" };
     const updates = {};
-    if(req.body.name){
+    if (req.body.name) {
       updates.name = req.body.name;
     }
-    if(req.body.address){
+    if (req.body.address) {
       updates.address = req.body.address;
-
     }
-    if(req.body.password){
+    if (req.body.password) {
       updates.password = req.body.password;
     }
-    if(req.body.phone){
+    if (req.body.phone) {
       updates.phone = req.body.phone;
     }
-
+    if (req.body.email) {
+      throw createHttpError(400,"Email can not be updated!");
+    }
     const image = req.file;
-    if(image){
-      if(image.size > 2*1024*1024){
-        throw createHttpError(400,'Image file cant exceede 2mb')
+    if (image) {
+      if (image.size > 2 * 1024 * 1024) {
+        throw createHttpError(400, "Image file cant exceede 2mb");
       }
-      updates.image = image.buffer.toString('base64')
+      updates.image = image.buffer.toString("base64");
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userID,updates,updateOptions);
-    if(!updatedUser){
-      throw createHttpError(404,'User does not exists')
+    const updatedUser = await User.findByIdAndUpdate(
+      userID,
+      updates,
+      updateOptions
+    ).select("-password");
+    if (!updatedUser) {
+      throw createHttpError(404, "User does not exists");
     }
-    
 
     return successResponse(res, {
       statusCode: 200,
       message: "user were updated Successfully",
-      payload:updatedUser
+      payload: updatedUser,
     });
   } catch (error) {
     next(error);
