@@ -145,10 +145,44 @@ const activateUserAccount = async (req, res, next) => {
     next(error);
   }
 };
+const updateUserById = async (req, res, next) => {
+  try {
+    const userID = req.params.id;
+    const updateOptions = { new:true,runValidators:true,context: 'query'};
+    const updates = {};
+    if(req.body.name){
+      updates.name = req.body.name;
+    }
+    if(req.body.address){
+      updates.address = req.body.address;
+
+    }
+    if(req.body.password){
+      updates.password = req.body.password;
+    }
+    if(req.body.phone){
+      updates.phone = req.body.phone;
+    }
+
+    const image = req.file;
+    if(image){
+      // image size maximum 2mb
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "user were updated Successfully",
+      payload:{}
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getUsers,
   getUser,
   deleteUser,
   processRegister,
   activateUserAccount,
+  updateUserById,
 };
