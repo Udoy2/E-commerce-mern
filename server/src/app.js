@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const createError = require('http-errors');
+const cookieParser = require('cookie-parser');
 // const xssClean = require('xss-clean')
 const rateLimit = require('express-rate-limit');
 const { userRouter } = require('./routers/userRouter');
@@ -19,6 +20,7 @@ app.use(rateLimiter)
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
+app.use(cookieParser());
 
 app.get("/",(req,res)=>{
     res.send("welcome getta")

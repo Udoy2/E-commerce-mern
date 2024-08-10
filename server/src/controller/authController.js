@@ -24,7 +24,7 @@ const handleLogin = async (req,res,next) => {
         if(user.isBanned) throw createHttpError(403,'You are banned! Please contact the admins!');
         // token generate,cookie
         const accessToken = createJSONWebToken({email},jwtAccessKey,'10m');
-        res.cookie('access_token',accessToken,{
+        res.cookie('accessToken',accessToken,{
             maxAge: 15*60*1000,//15 min
             httpOnly:true,
             secure:true,
@@ -43,7 +43,7 @@ const handleLogin = async (req,res,next) => {
 
 const handleLogout = async (req,res,next) => {
     try {
-        res.clearCookie('access_token');
+        res.clearCookie('accessToken');
         return successResponse(res, {
             statusCode: 200,
             message: "Logout Successfull",
