@@ -200,3 +200,4 @@ module.exports = {
   activateUserAccount,
   updateUserById,
 };
+// data
