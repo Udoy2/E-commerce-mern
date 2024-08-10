@@ -6,8 +6,8 @@ const { findWithID } = require("../services/findWithID");
 const { deleteImage } = require("../helper/deleteImage");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
 const { jwtActivationKey, clientUrl } = require("../secret");
-const { emailWithNodeMailer } = require("../helper/email");
 const jwt = require("jsonwebtoken");
+const { emailWithNodeMailer } = require("../helper/email");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
