@@ -5,6 +5,7 @@ const bycrypt = require('bcryptjs');
 
 const User = require("../models/userModel");
 const createHttpError = require("http-errors");
+const { jwtAccessKey } = require("../secret");
 
 const handleLogin = async (req,res,next) => {
     try {
@@ -22,7 +23,13 @@ const handleLogin = async (req,res,next) => {
         // isBanned
         if(user.isBanned) throw createHttpError(403,'You are banned! Please contact the admins!');
         // token generate,cookie
-        
+        const accessToken = createJSONWebToken({email},jwtAccessKey,'10m');
+        res.cookie('access_token',accessToken,{
+            maxAge: 15*60*1000,//15 min
+            httpOnly:true,
+            secure:true,
+            sameSite:'none',
+        })
         return successResponse(res, {
             statusCode: 200,
             message: "Login Successfull",
