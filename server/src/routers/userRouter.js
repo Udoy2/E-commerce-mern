@@ -3,10 +3,10 @@ const { getUsers,getUser, deleteUser, processRegister, activateUserAccount, upda
 const { upload } = require('../middlewares/uploadFile');
 const { validateUserRegistration } = require('../validators/auth');
 const { runValidation } = require('../validators');
-const { isLoggedIn, isLoggedOUT } = require('../middlewares/auth');
+const { isLoggedIn, isLoggedOUT, isAdmin } = require('../middlewares/auth');
 const userRouter = express.Router();
 
-userRouter.get('/',isLoggedIn,getUsers)
+userRouter.get('/',isLoggedIn,isAdmin,getUsers)
 userRouter.get('/:id',isLoggedIn,getUser)
 userRouter.put('/:id',isLoggedIn,upload.single("image"),updateUserById)
 userRouter.delete('/:id',isLoggedIn,deleteUser)
