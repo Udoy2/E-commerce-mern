@@ -7,10 +7,11 @@ const { isLoggedIn } = require('../middlewares/auth');
 const userRouter = express.Router();
 
 userRouter.get('/',isLoggedIn,getUsers)
-userRouter.get('/:id',getUser)
+userRouter.get('/:id',isLoggedIn,getUser)
+userRouter.put('/:id',isLoggedIn,upload.single("image"),updateUserById)
+userRouter.delete('/:id',isLoggedIn,deleteUser)
+
 userRouter.post('/process-register',upload.single("image"),validateUserRegistration,runValidation,processRegister)
 userRouter.post('/activate',activateUserAccount)
-userRouter.delete('/:id',deleteUser)
-userRouter.put('/:id',upload.single("image"),updateUserById)
 
 module.exports = {userRouter}
