@@ -14,5 +14,16 @@ const isLoggedIn = async(req,res,next) => {
         return next(error);
     }
 }
-
-module.exports = {isLoggedIn}
+const isLoggedOUT = async(req,res,next) => {
+    try {
+        const token = req.cookies.accessToken;
+        if(token) throw createHttpError(401,'User is already loggedIN');
+        const decoded = jwt.verify(token,jwtAccessKey);
+        if(decoded) throw createHttpError(401,'User is already loggedIN');
+        next()
+        
+    } catch (error) {
+        return next(error);
+    }
+}
+module.exports = {isLoggedIn,isLoggedOUT}
