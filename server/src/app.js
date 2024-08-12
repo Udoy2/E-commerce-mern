@@ -11,7 +11,7 @@ const { errorResponse } = require('./controller/responseController');
 const { authRouter } = require('./routers/authRouter');
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
-    max: 5,
+    max: 50,
     message: "Too many requests from this ip , please try again Later"
 })
 const app = express()

@@ -3,7 +3,7 @@ const data = {
       {
         name: "John Doe",
         email: "udoy@gmail.com",
-        password: "password123",
+        password: "password123@",
         phone: "+1234567890",
         address: "123 Main St, Anytown, USA"
       },

@@ -13,8 +13,8 @@ const handleLogin = async (req,res,next) => {
         const {email,password} = req.body;
         
         // if the user exists
-        console.log(req.body);
         const user = await User.findOne({email})
+        
         
         if(!user) throw createHttpError(404,"User does not exist with this email, Please register first");
         // compare the password
@@ -23,7 +23,9 @@ const handleLogin = async (req,res,next) => {
         // isBanned
         if(user.isBanned) throw createHttpError(403,'You are banned! Please contact the admins!');
         // token generate,cookie
-        const accessToken = createJSONWebToken({user},jwtAccessKey,'15m');
+
+        const userWithoutPassword = await User.findOne({email}).select("-password")
+        const accessToken = createJSONWebToken({user:userWithoutPassword},jwtAccessKey,'15m');
         res.cookie('accessToken',accessToken,{
             maxAge: 15*60*1000,//15 min
             httpOnly:true,

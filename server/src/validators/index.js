@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const { errorResponse } = require("../controller/responseController");
 
 const runValidation = async (req, res, next) => {
+  
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
