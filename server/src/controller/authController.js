@@ -23,7 +23,7 @@ const handleLogin = async (req,res,next) => {
         // isBanned
         if(user.isBanned) throw createHttpError(403,'You are banned! Please contact the admins!');
         // token generate,cookie
-        const accessToken = createJSONWebToken({email},jwtAccessKey,'10m');
+        const accessToken = createJSONWebToken({_id:user._id},jwtAccessKey,'10m');
         res.cookie('accessToken',accessToken,{
             maxAge: 15*60*1000,//15 min
             httpOnly:true,
