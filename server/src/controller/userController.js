@@ -1,47 +1,20 @@
 const User = require("../models/userModel");
 const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
-const { default: mongoose } = require("mongoose");
 const { findWithID } = require("../services/findWithID");
-const { deleteImage } = require("../helper/deleteImage");
-const { createJSONWebToken } = require("../helper/jsonwebtoken");
-const { jwtActivationKey, clientUrl } = require("../secret");
+const { jwtActivationKey} = require("../secret");
 const jwt = require("jsonwebtoken");
-const { emailWithNodeMailer } = require("../helper/email");
+const { findUsers, handleEmailAndGenerateToken } = require("../services/userService");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 5;
-
-    const searchRegExp = new RegExp(".*" + search + ".*", "i");
-    const filter = {
-      isAdmin: { $ne: true },
-      $or: [
-        { name: { $regex: searchRegExp } },
-        { email: { $regex: searchRegExp } },
-        { phone: { $regex: searchRegExp } },
-      ],
-    };
-    const options = { password: 0 };
-    const users = await User.find(filter, options)
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    const count = await User.find(filter).countDocuments();
-    if (!users) throw createHttpError(404, "no users found");
+    const payload = await findUsers(search,limit,page);
     return successResponse(res, {
       statusCode: 200,
       message: "user were returned Successfully",
-      payload: {
-        users,
-        pagination: {
-          totalPage: Math.ceil(count / limit),
-          currentPage: page,
-          previousPage: page - 1 > 0 ? page - 1 : null,
-          nextPage: page + 1 <= Math.ceil(count / limit) ? page + 1 : null,
-        },
-      },
+      payload
     });
   } catch (error) {
     next(error);
@@ -82,34 +55,7 @@ const processRegister = async (req, res, next) => {
     const { name, email, password, phone, address } = req.body;
     const imageBufferString = req.file.buffer.toString("base64");
 
-    const userExists = await User.exists({ email: email });
-    if (userExists)
-      throw createHttpError(
-        409,
-        "User with this already exists, Please log in"
-      );
-
-    // create jwt
-    const token = createJSONWebToken(
-      { name, email, password, phone, address, image: imageBufferString },
-      jwtActivationKey,
-      "10m"
-    );
-
-    // email
-    const emailData = {
-      email,
-      subject: "Account Activation Email",
-      html: `
-              <h2> Hello ${name} <h2>
-              <p> Please Click here to <a href="${clientUrl}/api/users/activate/${token} target='_blank'"> activate </a> </p>
-            `,
-    };
-    try {
-      emailWithNodeMailer(emailData);
-    } catch (error) {
-      next(createHttpError(500, "Failed to send verification email"));
-    }
+    const token = await handleEmailAndGenerateToken(name, email, password, phone, address ,imageBufferString)
     return successResponse(res, {
       statusCode: 200,
       message:
@@ -252,4 +198,4 @@ module.exports = {
   handleBanUserById,
   handleUnBanUserById
 };
-// data
+
