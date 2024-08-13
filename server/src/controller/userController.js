@@ -4,6 +4,7 @@ const { successResponse } = require("./responseController");
 const { findWithID } = require("../services/findWithID");
 const { jwtActivationKey} = require("../secret");
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
 const { findUsers, handleEmailAndGenerateToken } = require("../services/userService");
 const getUsers = async (req, res, next) => {
   try {
@@ -166,7 +167,7 @@ const handleUnBanUserById = async (req, res, next) => {
   try {
     const userID = req.params.id;
     await findWithID(User, userID, {});
-    const updates = {isBanned: true};
+    const updates = {isBanned: false};
     const updateOptions = { new: true, runValidators: true, context: "query" };
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -188,6 +189,34 @@ const handleUnBanUserById = async (req, res, next) => {
   }
 };
 
+const handleUpdatePassword = async (req, res, next) => {
+  try {
+    const {id,email,oldPassword,newPassword,confirmPassword} = req.body;
+    
+    await findWithID(User,id,{});
+    const item = await User.findOne({email:email});
+    if (!item) throw createHttpError(404, `User with this email does not exit with this id`);
+    const user = await User.findById(id);
+    
+    const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
+    if(!isPasswordMatch) throw createHttpError(401,'Old password does not match');
+    if(newPassword != confirmPassword) throw createHttpError(401,'Both password must exactly');
+    
+    const options = {new:true,context:'query'};
+    const updates = {password:newPassword};
+    const updatedUser = User.findByIdAndUpdate(id,updates,options).select('-password')
+    
+    
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "password updated Successfully",
+      // payload: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getUsers,
   getUser,
@@ -196,6 +225,7 @@ module.exports = {
   activateUserAccount,
   updateUserById,
   handleBanUserById,
-  handleUnBanUserById
+  handleUnBanUserById,
+  handleUpdatePassword
 };
 
