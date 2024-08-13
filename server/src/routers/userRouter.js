@@ -10,8 +10,8 @@ userRouter.get('/',isLoggedIn,isAdmin,getUsers)
 userRouter.get('/:id',isLoggedIn,getUser)
 userRouter.put('/:id',isLoggedIn,upload.single("image"),updateUserById)
 userRouter.delete('/:id',isLoggedIn,deleteUser)
-userRouter.put('/ban-user',isLoggedIn,isAdmin,handleBanUserById)
-userRouter.put('/unban-user',isLoggedIn,isAdmin,handleUnBanUserById)
+userRouter.put('/banUser/:id',isLoggedIn,isAdmin,handleBanUserById)
+userRouter.put('/unbanUser/:id',isLoggedIn,isAdmin,handleUnBanUserById)
 
 
 userRouter.post('/process-register',isLoggedOUT,upload.single("image"),validateUserRegistration,runValidation,processRegister)
