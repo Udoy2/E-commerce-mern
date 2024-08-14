@@ -58,7 +58,7 @@ const handleEmailAndGenerateToken = async (
     const token = createJSONWebToken(
       { name, email, password, phone, address, image: imageBufferString },
       jwtActivationKey,
-      "10m"
+      "15m"
     );
 
     // email

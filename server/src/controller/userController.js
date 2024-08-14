@@ -2,20 +2,23 @@ const User = require("../models/userModel");
 const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
 const { findWithID } = require("../services/findWithID");
-const { jwtActivationKey} = require("../secret");
+const { jwtActivationKey } = require("../secret");
 const jwt = require("jsonwebtoken");
-const bcrypt = require('bcryptjs');
-const { findUsers, handleEmailAndGenerateToken } = require("../services/userService");
+const bcrypt = require("bcryptjs");
+const {
+  findUsers,
+  handleEmailAndGenerateToken,
+} = require("../services/userService");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 5;
-    const payload = await findUsers(search,limit,page);
+    const payload = await findUsers(search, limit, page);
     return successResponse(res, {
       statusCode: 200,
       message: "user were returned Successfully",
-      payload
+      payload,
     });
   } catch (error) {
     next(error);
@@ -56,7 +59,14 @@ const processRegister = async (req, res, next) => {
     const { name, email, password, phone, address } = req.body;
     const imageBufferString = req.file.buffer.toString("base64");
 
-    const token = await handleEmailAndGenerateToken(name, email, password, phone, address ,imageBufferString)
+    const token = await handleEmailAndGenerateToken(
+      name,
+      email,
+      password,
+      phone,
+      address,
+      imageBufferString
+    );
     return successResponse(res, {
       statusCode: 200,
       message:
@@ -141,7 +151,7 @@ const handleBanUserById = async (req, res, next) => {
   try {
     const userID = req.params.id;
     await findWithID(User, userID, {});
-    const updates = {isBanned: true};
+    const updates = { isBanned: true };
     const updateOptions = { new: true, runValidators: true, context: "query" };
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -162,12 +172,11 @@ const handleBanUserById = async (req, res, next) => {
     next(error);
   }
 };
-
 const handleUnBanUserById = async (req, res, next) => {
   try {
     const userID = req.params.id;
     await findWithID(User, userID, {});
-    const updates = {isBanned: false};
+    const updates = { isBanned: false };
     const updateOptions = { new: true, runValidators: true, context: "query" };
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -188,25 +197,30 @@ const handleUnBanUserById = async (req, res, next) => {
     next(error);
   }
 };
-
 const handleUpdatePassword = async (req, res, next) => {
   try {
-    const {id,email,oldPassword,newPassword,confirmPassword} = req.body;
-    
-    await findWithID(User,id,{});
-    const item = await User.findOne({email:email});
-    if (!item) throw createHttpError(404, `User with this email does not exit with this id`);
+    const { id, email, oldPassword, newPassword, confirmPassword } = req.body;
+
+    await findWithID(User, id, {});
+    const item = await User.findOne({ email: email });
+    if (!item)
+      throw createHttpError(
+        404,
+        `User with this email does not exit with this id`
+      );
     const user = await User.findById(id);
-    
-    const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
-    if(!isPasswordMatch) throw createHttpError(401,'Old password does not match');
-    if(newPassword != confirmPassword) throw createHttpError(401,'Both password must exactly');
-    
-    const options = {new:true,context:'query'};
-    const updates = {password:newPassword};
-    const updatedUser = User.findByIdAndUpdate(id,updates,options).select('-password')
-    
-    
+
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordMatch)
+      throw createHttpError(401, "Old password does not match");
+    if (newPassword != confirmPassword)
+      throw createHttpError(401, "Both password must exactly");
+
+    const options = { new: true, context: "query" };
+    const updates = { password: newPassword };
+    const updatedUser = User.findByIdAndUpdate(id, updates, options).select(
+      "-password"
+    );
 
     return successResponse(res, {
       statusCode: 200,
@@ -226,6 +240,5 @@ module.exports = {
   updateUserById,
   handleBanUserById,
   handleUnBanUserById,
-  handleUpdatePassword
+  handleUpdatePassword,
 };
-

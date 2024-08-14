@@ -69,6 +69,35 @@ const validateUserLogin = [
  
 
 ]
+const forgetPasswordValidator = [
+
+
+    body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email address"),
+
+ 
+
+]
+const resetPasswordValidator = [
+
+
+    body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({min:6})
+    .withMessage("Password sould be atleast 6 character long")
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+    .withMessage("Password sould contain Minimum eight characters, at least one letter, one number and one special character"),
+ 
+
+ 
+
+]
 //sign in validation
 
-module.exports = {validateUserRegistration,validateUserLogin};
+module.exports = {validateUserRegistration,validateUserLogin,forgetPasswordValidator,resetPasswordValidator};

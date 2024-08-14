@@ -17,4 +17,6 @@ userRouter.post('/process-register',isLoggedOUT,upload.single("image"),validateU
 userRouter.post('/activate',isLoggedOUT,activateUserAccount)
 
 userRouter.post('/update-password',handleUpdatePassword)
+
+
 module.exports = {userRouter}
