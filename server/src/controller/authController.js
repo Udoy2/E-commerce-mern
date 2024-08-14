@@ -36,7 +36,7 @@ const handleLogin = async (req, res, next) => {
     const accessToken = createJSONWebToken(
       { user: userWithoutPassword },
       jwtAccessKey,
-      "1m"
+      "15m"
     );
     const refreshToken = createJSONWebToken(
       { user: userWithoutPassword },
@@ -44,13 +44,13 @@ const handleLogin = async (req, res, next) => {
       "7d"
     );
     res.cookie("accessToken", accessToken, {
-      maxAge: 1 * 60 * 1000, //15 min
+      maxAge: 15 * 60 * 1000, //15 min
       httpOnly: true,
       secure: true,
       sameSite: "none",
     });
     res.cookie("refreshToken", refreshToken, {
-      maxAge: 7*24*60*60*1000, //7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -107,23 +107,86 @@ const handleForgetPassword = async (req, res, next) => {
 };
 
 const handleResetPassword = async (req, res, next) => {
-    try {
-      const {token,password} = req.body;
-      const decoded = jwt.verify(token,jwtActivationKey);
-      if(!decoded) throw createHttpError(401,"Your token is not verified or expired! try again!");
-      const updateOptions = {new:true,validation:true,context: "query" };
-      const update = {password:password};
-      const user = await User.findOneAndUpdate({email:decoded.email},update,updateOptions).select("-password");
-      
-      return successResponse(res, {
-        statusCode: 200,
-        message: "Your password reset was successfull!",
-        payload: { user },
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-  
-  
-module.exports = { handleLogin, handleLogout, handleForgetPassword,handleResetPassword };
+  try {
+    const { token, password } = req.body;
+    const decoded = jwt.verify(token, jwtActivationKey);
+    if (!decoded)
+      throw createHttpError(
+        401,
+        "Your token is not verified or expired! try again!"
+      );
+    const updateOptions = { new: true, validation: true, context: "query" };
+    const update = { password: password };
+    const user = await User.findOneAndUpdate(
+      { email: decoded.email },
+      update,
+      updateOptions
+    ).select("-password");
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Your password reset was successfull!",
+      payload: { user },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const handleRefreshToken = async (req, res, next) => {
+  try {
+    const oldRefreshToken = req.cookies.refreshToken;
+    const decoded = jwt.verify(oldRefreshToken, jwtAccessKey);
+    if (!decoded) throw createHttpError(
+        401,
+        "Your token is not verified or expired! try again!"
+      );
+
+    const userWithoutPassword = await User.findOne({
+      email: decoded.email,
+    }).select("-password");
+    const accessToken = createJSONWebToken(
+      { user: userWithoutPassword },
+      jwtAccessKey,
+      "15m"
+    );
+    res.cookie("accessToken", accessToken, {
+      maxAge: 15 * 60 * 1000, //15 min
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    return successResponse(res, {
+      statusCode: 200,
+      message: "New accessToken generated successfully!",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const handleProtectedRoute = async (req, res, next) => {
+  try {
+    const accessToken = req.cookies.accessToken;
+    const decoded = jwt.verify(accessToken, jwtAccessKey);
+    if (!decoded) throw createHttpError(
+        401,
+        "Your token is not verified or expired! try again!"
+      );
+
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Route is protected! access token is valid!",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = {
+  handleLogin,
+  handleLogout,
+  handleForgetPassword,
+  handleResetPassword,
+  handleRefreshToken,
+  handleProtectedRoute
+};
