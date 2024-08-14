@@ -36,10 +36,21 @@ const handleLogin = async (req, res, next) => {
     const accessToken = createJSONWebToken(
       { user: userWithoutPassword },
       jwtAccessKey,
-      "15m"
+      "1m"
+    );
+    const refreshToken = createJSONWebToken(
+      { user: userWithoutPassword },
+      jwtAccessKey,
+      "7d"
     );
     res.cookie("accessToken", accessToken, {
-      maxAge: 15 * 60 * 1000, //15 min
+      maxAge: 1 * 60 * 1000, //15 min
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 7*24*60*60*1000, //7 days
       httpOnly: true,
       secure: true,
       sameSite: "none",
