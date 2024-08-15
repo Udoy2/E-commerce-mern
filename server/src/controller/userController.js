@@ -9,6 +9,7 @@ const {
   findUsers,
   handleEmailAndGenerateToken,
 } = require("../services/userService");
+const { checkUserExists } = require("../helper/checkUserExists");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
@@ -85,7 +86,7 @@ const activateUserAccount = async (req, res, next) => {
 
     if (!token) throw createHttpError(404, "Token not found!");
     const decoded = jwt.verify(token, jwtActivationKey);
-    const userExists = await User.exists({ email: decoded.email });
+    const userExists = await checkUserExists(decoded.email)
     if (userExists)
       throw createHttpError(
         409,
@@ -202,7 +203,7 @@ const handleUpdatePassword = async (req, res, next) => {
     const { id, email, oldPassword, newPassword, confirmPassword } = req.body;
 
     await findWithID(User, id, {});
-    const item = await User.findOne({ email: email });
+    const item = await checkUserExists(email);
     if (!item)
       throw createHttpError(
         404,
