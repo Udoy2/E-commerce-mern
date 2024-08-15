@@ -30,9 +30,8 @@ const handleLogin = async (req, res, next) => {
       throw createHttpError(403, "You are banned! Please contact the admins!");
     // token generate,cookie
 
-    const userWithoutPassword = await User.findOne({ email }).select(
-      "-password"
-    );
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
     const accessToken = createJSONWebToken(
       { user: userWithoutPassword },
       jwtAccessKey,

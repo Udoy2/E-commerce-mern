@@ -14,9 +14,9 @@ userRouter.put('/banUser/:id',isLoggedIn,isAdmin,handleBanUserById);
 userRouter.put('/unbanUser/:id',isLoggedIn,isAdmin,handleUnBanUserById);
 
 userRouter.post('/process-register',isLoggedOUT,upload.single("image"),validateUserRegistration,runValidation,processRegister)
-userRouter.post('/activate',isLoggedOUT,activateUserAccount)
+userRouter.post('/activate',isLoggedOUT,activateUserAccount);
 
-userRouter.post('/update-password',handleUpdatePassword)
+userRouter.post('/update-password',handleUpdatePassword);
 
 
 module.exports = {userRouter}

@@ -6,12 +6,12 @@ const { validateUserLogin, forgetPasswordValidator, resetPasswordValidator } = r
 
 const authRouter = express.Router();
 
-authRouter.post("/login",validateUserLogin,runValidation,isLoggedOUT,handleLogin)
-authRouter.post("/logout",isLoggedIn,handleLogout)
-authRouter.post('/forget-password',forgetPasswordValidator,runValidation,isLoggedOUT,handleForgetPassword)
-authRouter.put('/reset-password',resetPasswordValidator,runValidation,isLoggedOUT,handleResetPassword)
-authRouter.get('/refresh-token',handleRefreshToken)
-authRouter.get('/protected',handleProtectedRoute)
+authRouter.post("/login",validateUserLogin,runValidation,isLoggedOUT,handleLogin);
+authRouter.post("/logout",isLoggedIn,handleLogout);
+authRouter.post('/forget-password',forgetPasswordValidator,runValidation,isLoggedOUT,handleForgetPassword);
+authRouter.put('/reset-password',resetPasswordValidator,runValidation,isLoggedOUT,handleResetPassword);
+authRouter.get('/refresh-token',handleRefreshToken);
+authRouter.get('/protected',handleProtectedRoute);
 
 
 module.exports = {authRouter}
