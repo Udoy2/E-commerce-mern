@@ -20,7 +20,6 @@ const findUsers = async (search, limit, page) => {
     const users = await User.find(filter, options)
       .skip((page - 1) * limit)
       .limit(limit);
-    console.log(users);
 
     const count = await User.find(filter).countDocuments();
     if (!users) throw createHttpError(404, "no users found");

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
+const { logger } = require("../controller/loggerController");
 
 const createJSONWebToken = (payload, key, expiresIn) => {
-    console.log(payload);
     
   if (typeof(payload) != "object" || !payload) {
     throw new Error("Payload must be non-empty object");
@@ -14,7 +14,7 @@ const createJSONWebToken = (payload, key, expiresIn) => {
     const token = jwt.sign(payload, key, { expiresIn: expiresIn });
     return token;
   } catch (error) {
-    console.log("Failed to sign the JWT:", error);
+    logger.log("info","Failed to sign the JWT:", error);
     throw error;
   }
 };
