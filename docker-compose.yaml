@@ -1,0 +1,9 @@
+services:
+  server:
+    build: ./server
+    container_name: server_c
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./server:/app
+      - /home/hulk/Desktop/projects/E-commerce-mern/server/node_modules

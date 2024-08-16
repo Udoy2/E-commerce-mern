@@ -4,7 +4,7 @@ const { logger } = require("../controller/loggerController");
 const connectDB = async (options={})=> {
     try {
         await mongoose.connect(mongodbURL,options)
-        logger.log("info","Connection to DB is sucessfully established");
+        logger.log("info","Connection to DB is sucessfully established..");
         mongoose.connection.on('error',(error)=>{
             logger.log("error",
                 "DB connection error: "+error.toString()
