@@ -1,11 +1,12 @@
 const { successResponse } = require("./responseController");
 const slugify = require('slugify');
 const Category = require("../models/categoryModel");
-const { createCategory } = require("../services/categoryService");
+const { createCategory, getCateogries } = require("../services/categoryService");
 
 const handleCreateCategory =async (req,res,next) => {
     try {
         const {name} = req.body;
+        //service: createCategory
         const newCategory = await createCategory(name);
         return successResponse(res,{
             statusCode:200,
@@ -17,4 +18,18 @@ const handleCreateCategory =async (req,res,next) => {
     }
 }
 
-module.exports = {handleCreateCategory}
+const handleGetCategories =async (req,res,next) => {
+    try {
+        //service: createCategory
+        const allCategories = await getCateogries();
+        return successResponse(res,{
+            statusCode:200,
+            message:'Categories fetched successfully!',
+            payload:allCategories
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = {handleCreateCategory,handleGetCategories}

@@ -14,5 +14,11 @@ const createCategory =async (name) => {
         throw error;
     }
 }
-
-module.exports = {createCategory}
+const getCateogries =async (name) => {
+    try {
+        return await Category.find({}).select('name slug').lean();
+    } catch (error) {
+        throw error;
+    }
+}
+module.exports = {createCategory,getCateogries}
