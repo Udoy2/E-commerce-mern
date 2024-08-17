@@ -3,7 +3,6 @@ const Category = require("../models/categoryModel");
 
 const createCategory =async (name) => {
     try {
-        const {name} = req.body;
         const slugName = slugify(name);
         const newCategory = await Category.create({
             name: name,
@@ -14,7 +13,7 @@ const createCategory =async (name) => {
         throw error;
     }
 }
-const getCateogries =async (name) => {
+const getCateogries =async () => {
     try {
         return await Category.find({}).select('name slug').lean();
     } catch (error) {
