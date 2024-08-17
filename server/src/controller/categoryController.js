@@ -1,7 +1,7 @@
 const { successResponse } = require("./responseController");
 const slugify = require('slugify');
 const Category = require("../models/categoryModel");
-const { createCategory, getCateogries, getCateogryBySlug } = require("../services/categoryService");
+const { createCategory, getCateogries, getCateogryBySlug, updateCategoryBySlug } = require("../services/categoryService");
 
 const handleCreateCategory =async (req,res,next) => {
     try {
@@ -46,5 +46,20 @@ const handleGetCategory =async (req,res,next) => {
         next(error);
     }
 }
-
-module.exports = {handleCreateCategory,handleGetCategories,handleGetCategory}
+const handleUpdateCategory =async (req,res,next) => {
+    try {
+        //service: createCategory
+        const {slug} = req.params;
+        const {name} = req.body;
+        
+        const category = await updateCategoryBySlug(slug,name);
+        return successResponse(res,{
+            statusCode:200,
+            message:'Categories updated successfully!',
+            payload:category
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+module.exports = {handleCreateCategory,handleGetCategories,handleGetCategory,handleUpdateCategory}
