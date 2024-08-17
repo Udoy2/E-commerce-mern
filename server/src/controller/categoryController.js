@@ -1,7 +1,7 @@
 const { successResponse } = require("./responseController");
 const slugify = require('slugify');
 const Category = require("../models/categoryModel");
-const { createCategory, getCateogries, getCateogryBySlug, updateCategoryBySlug } = require("../services/categoryService");
+const { createCategory, getCateogries, getCateogryBySlug, updateCategoryBySlug, deleteCategoryBySlug } = require("../services/categoryService");
 
 const handleCreateCategory =async (req,res,next) => {
     try {
@@ -62,4 +62,18 @@ const handleUpdateCategory =async (req,res,next) => {
         next(error);
     }
 }
-module.exports = {handleCreateCategory,handleGetCategories,handleGetCategory,handleUpdateCategory}
+const handleDeleteCategory =async (req,res,next) => {
+    try {
+        //service: createCategory
+        const {slug} = req.params;
+        
+        await deleteCategoryBySlug(slug);
+        return successResponse(res,{
+            statusCode:200,
+            message:'Categories deleted successfully!',
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+module.exports = {handleCreateCategory,handleGetCategories,handleGetCategory,handleUpdateCategory,handleDeleteCategory}

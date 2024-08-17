@@ -41,9 +41,17 @@ const updateCategoryBySlug = async (slug, name) => {
     throw error;
   }
 };
+const deleteCategoryBySlug = async (slug) => {
+    try {
+      await Category.findOneAndDelete({slug:slug});
+    } catch (error) {
+      throw error;
+    }
+  };
 module.exports = {
   createCategory,
   getCateogries,
   getCateogryBySlug,
   updateCategoryBySlug,
+  deleteCategoryBySlug
 };
