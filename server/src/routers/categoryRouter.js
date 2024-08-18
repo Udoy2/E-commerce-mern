@@ -36,5 +36,5 @@ categoryRouter.delete(
     isLoggedIn,
     isAdmin,
     handleDeleteCategory
-  );
+);
 module.exports = { categoryRouter };
