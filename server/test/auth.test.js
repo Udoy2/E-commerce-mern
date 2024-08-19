@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { connectDB } = require('../src/config/db');
 let accessToken;
 let refreshToken;
+jest.setTimeout(20000); // Set global timeout
 beforeAll(async () => {
     await connectDB();
 });
