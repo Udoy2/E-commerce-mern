@@ -6,7 +6,7 @@ let accessToken;
 let refreshToken;
 jest.setTimeout(20000); // Set global timeout
 beforeAll(async () => {
-    await connectDB();
+    await connectDB(process.env.MONGODB_URL);
 });
 
 afterAll(async () => {

@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const { mongodbURL } = require("../secret");
 const { logger } = require("../controller/loggerController");
-const connectDB = async (options={})=> {
+const connectDB = async (url,options={})=> {
     try {
-        await mongoose.connect(mongodbURL,options)
+        await mongoose.connect(!url?mongodbURL:url,options)
         logger.log("info","Connection to DB is sucessfully established..");
         mongoose.connection.on('error',(error)=>{
             logger.log("error",
