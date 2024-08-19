@@ -48,11 +48,7 @@ const productSchema = new Schema({
         require: [true,'Product sold quantity is required'],
         trim:true,
         default:0,
-        validate:{
-            validator: (v) => v > 0,
-            message: (props)=> `${props.value} is not a valid sold quantity! sold quantity must be grater than 0`
-            
-        },
+
     },
     address:{
         type: Number,
@@ -61,7 +57,7 @@ const productSchema = new Schema({
     image:{
         type: Buffer,
         contentType:String,
-        require: [true,'image is required'],
+        require: [false,'image is required'],
     },
     category:{
         type:Schema.Types.ObjectId,
