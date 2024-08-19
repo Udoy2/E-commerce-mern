@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Server test runner
 
 on:
@@ -23,11 +20,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: server/package-lock.json
-    - name: "Install dependencies"
+    - name: Install dependencies
       run: cd server && npm install
 
   unit-tests:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -36,13 +32,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js ${{ matrix.node-version }} for testing
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: server/package-lock.json
 
-    - name: "Run tests"
+    - name: Run unit tests
       working-directory: ./server
       run: npm test
