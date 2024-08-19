@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  dependency-installation:
+  unit-testing:
     runs-on: ubuntu-latest
 
     strategy:
