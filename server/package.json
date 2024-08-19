@@ -33,6 +33,9 @@
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
-    "morgan": "^1.10.0"
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "morgan": "^1.10.0",
+    "supertest": "^7.0.0"
   }
 }
