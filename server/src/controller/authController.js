@@ -7,12 +7,12 @@ const User = require("../models/userModel");
 const createHttpError = require("http-errors");
 const { jwtAccessKey, jwtActivationKey, clientUrl } = require("../secret");
 const { emailWithNodeMailer } = require("../helper/email");
+const { logger } = require("./loggerController");
 
 const handleLogin = async (req, res, next) => {
   try {
     // email , password
     const { email, password } = req.body;
-
     // if the user exists
     const user = await User.findOne({ email });
 
@@ -59,6 +59,7 @@ const handleLogin = async (req, res, next) => {
       message: "Login Successfull",
     });
   } catch (error) {
+    logger.log('error',error.toString())
     next(error);
   }
 };

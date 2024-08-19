@@ -3,6 +3,7 @@ const { runValidation } = require('../validators');
 const { handleLogin, handleLogout, handleForgetPassword, handleResetPassword, handleRefreshToken, handleProtectedRoute } = require('../controller/authController');
 const { isLoggedOUT, isLoggedIn } = require('../middlewares/auth');
 const { validateUserLogin, forgetPasswordValidator, resetPasswordValidator } = require('../validators/auth');
+const { successResponse } = require('../controller/responseController');
 
 const authRouter = express.Router();
 
@@ -13,5 +14,12 @@ authRouter.put('/reset-password',resetPasswordValidator,runValidation,isLoggedOU
 authRouter.get('/refresh-token',handleRefreshToken);
 authRouter.get('/protected',handleProtectedRoute);
 
+authRouter.post("/test",(req,res,next)=>{
+    return successResponse(res,{
+        statusCode:200,
+        message:'hello',
+        payload:{data: req.body}
+    })
+})
 
 module.exports = {authRouter}
