@@ -31,7 +31,7 @@ app.use("/api/users", userRouter);
 app.use("/api/seed", seedRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRouter);
-app.use("/api/produtcs", productRouter);
+app.use("/api/products", productRouter);
 
 
 app.use((req, res, next) => {
