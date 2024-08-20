@@ -10,6 +10,7 @@ const { seedRouter } = require("./routers/seedRouter");
 const { errorResponse } = require("./controller/responseController");
 const { authRouter } = require("./routers/authRouter");
 const { categoryRouter } = require("./routers/categoryRouter");
+const { productRouter } = require("./routers/productRouter");
 const rateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 50,
@@ -30,6 +31,8 @@ app.use("/api/users", userRouter);
 app.use("/api/seed", seedRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/produtcs", productRouter);
+
 
 app.use((req, res, next) => {
   next(createError(404, "route not found"));
