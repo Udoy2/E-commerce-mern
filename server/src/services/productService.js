@@ -4,7 +4,6 @@ const Product = require("../models/productModel");
 const productExistOrNot = async (name) => {
   try {
     const productExists = await Product.exists({ name: name });
-    console.log(productExists);
     
     if (productExists) {
       throw createHttpError(409, "product with this name already exists");
