@@ -35,7 +35,6 @@ const handleCreateProduct = async (req,res,next) => {
             payload:{product}
         })
     } catch (error) {
-        logger.log('info',"error---------------------------->")
         next(error);
     }
 }
