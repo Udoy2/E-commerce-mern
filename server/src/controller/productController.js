@@ -1,7 +1,6 @@
 const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
-const { createproduct, getProducts } = require("../services/productService");
-const Product = require("../models/productModel");
+const { createproduct, getProducts, getSingleProduct, deleteProductService } = require("../services/productService");
 
 const handleCreateProduct = async (req, res, next) => {
   try {
@@ -47,4 +46,29 @@ const handleGetProduct = async (req,res,next) => {
         next(error);
     }
 }
-module.exports = { handleCreateProduct,handleGetProduct };
+const handleGetSingleProduct = async (req,res,next) => {
+    try {
+        const slug = req.params.slug;
+        const product = await getSingleProduct(slug);
+        return successResponse(res,{
+            statusCode:200,
+            message:'product fetched successfully',
+            payload: product
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+const deleteProduct = async (req,res,next) => {
+    try {
+        const slug = req.params.slug;
+        await deleteProductService(slug);
+        return successResponse(res,{
+            statusCode:200,
+            message:'product deleted successfully',
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+module.exports = { handleCreateProduct,handleGetProduct,handleGetSingleProduct,deleteProduct };

@@ -56,4 +56,22 @@ const getProducts = async (page,limit) => {
     throw error;
   }
 };
-module.exports = { createproduct,getProducts };
+const getSingleProduct = async (slug) => {
+  try {
+    const product = await Product.findOne({slug})
+    if(!product) throw createHttpError(404,"No product found");
+    return product;
+  } catch (error) {
+    throw error;
+  }
+};
+const deleteProductService = async (slug) => {
+  try {
+    const product = await Product.findOne({slug})
+    if(!product) throw createHttpError(404,"No product found");
+    await Product.deleteOne({slug});
+  } catch (error) {
+    throw error;
+  }
+};
+module.exports = { createproduct,getProducts,getSingleProduct,deleteProductService };
