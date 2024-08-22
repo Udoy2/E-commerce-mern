@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const { successResponse } = require("./responseController");
-const { createproduct } = require("../services/productService");
+const { createproduct, getProducts } = require("../services/productService");
+const Product = require("../models/productModel");
 
 const handleCreateProduct = async (req, res, next) => {
   try {
@@ -32,5 +33,18 @@ const handleCreateProduct = async (req, res, next) => {
     next(error);
   }
 };
-
-module.exports = { handleCreateProduct };
+const handleGetProduct = async (req,res,next) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const payload = await getProducts(page,limit);
+        return successResponse(res,{
+            statusCode:200,
+            message:'product fetched successfully',
+            payload: payload
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+module.exports = { handleCreateProduct,handleGetProduct };
