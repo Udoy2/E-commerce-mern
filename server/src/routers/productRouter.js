@@ -16,6 +16,7 @@ const productRouter = express.Router();
 
 productRouter.post(
   "/",
+  isLoggedIn,
   upload.single("image"),
   validateProduct,
   runValidation,
@@ -23,11 +24,7 @@ productRouter.post(
 );
 productRouter.get("/", handleGetProduct);
 productRouter.get("/:slug", handleGetSingleProduct);
-productRouter.delete("/:slug", deleteProduct);
-productRouter.put(
-  "/:slug",
-  upload.single("image"),
-  updateProduct
-);
+productRouter.delete("/:slug", isLoggedIn, deleteProduct);
+productRouter.put("/:slug", isLoggedIn, upload.single("image"), updateProduct);
 
 module.exports = { productRouter };
