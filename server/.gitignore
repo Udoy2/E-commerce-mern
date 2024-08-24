@@ -1,5 +1,6 @@
 # my own files
 /test/auth.test.js
+/test/api.test.js
 
 
 # Logs
