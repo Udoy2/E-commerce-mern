@@ -33,9 +33,15 @@ const createproduct = async (
     throw error;
   }
 };
-const getProducts = async (page, limit) => {
+const getProducts = async (search,page, limit) => {
   try {
-    const products = await Product.find({})
+    const searchRegExp = new RegExp(".*" + search + ".*", "i");
+    const filter = {
+      $or: [
+        { name: { $regex: searchRegExp } },
+      ],
+    };
+    const products = await Product.find(filter)
       .populate("category")
       .skip((page - 1) * limit)
       .limit(limit)

@@ -40,9 +40,10 @@ const handleCreateProduct = async (req, res, next) => {
 };
 const handleGetProduct = async (req, res, next) => {
   try {
+    const search = req.query.search || "";
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
-    const payload = await getProducts(page, limit);
+    const payload = await getProducts(search,page, limit);
     return successResponse(res, {
       statusCode: 200,
       message: "product fetched successfully",
