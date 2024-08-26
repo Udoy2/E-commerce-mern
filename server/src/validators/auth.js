@@ -35,11 +35,7 @@ const validateUserRegistration = [
     body("phone")
     .trim()
     .notEmpty()
-    .withMessage("Phone is required"),
-
-
-
-
+    .withMessage("Phone is required")
 ]
 
 const validateUserLogin = [

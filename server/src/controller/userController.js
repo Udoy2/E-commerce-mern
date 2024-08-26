@@ -14,7 +14,7 @@ const { checkUserExists } = require("../helper/checkUserExists");
 const { cloudinarry, cloudinary } = require("../config/cloudinary");
 const { log } = require("winston");
 const { deleteImage } = require("../helper/deleteImage");
-const { uploadImageToCloudinary } = require("../helper/cloudinaryHelper");
+const { uploadImageToCloudinary, getFileNameWithoutExtension } = require("../helper/cloudinaryHelper");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
@@ -51,6 +51,16 @@ const deleteUser = async (req, res, next) => {
     const id = req.params.id;
     const option = { password: 0 };
     const user = await findWithID(User, id, { options: option });
+    if(user && user.image){
+      const publicID = getFileNameWithoutExtension(user.image);
+      const {result} = await cloudinary.uploader.destroy(`ecommerceMern/${publicID}`)
+      if(result != 'ok'){
+        throw new Error(
+          'User image was not deleted successfully from cloudinary, please try again'
+        )
+      }
+      
+    }
     await User.findByIdAndDelete({ _id: id, isAdmin: false });
     return successResponse(res, {
       statusCode: 200,
@@ -63,7 +73,6 @@ const deleteUser = async (req, res, next) => {
 const processRegister = async (req, res, next) => {
   try {
     const { name, email, password, phone, address } = req.body;
-    const imageBufferString = req.file.buffer.toString("base64");
 
     const token = await handleEmailAndGenerateToken(
       name,
@@ -71,7 +80,6 @@ const processRegister = async (req, res, next) => {
       password,
       phone,
       address,
-      imageBufferString
     );
     return successResponse(res, {
       statusCode: 200,
