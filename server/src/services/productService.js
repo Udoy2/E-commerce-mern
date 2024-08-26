@@ -47,7 +47,7 @@ const getProducts = async (search,page, limit) => {
       .limit(limit)
       .sort({ createdAt: -1 });
     if (!products) throw createHttpError(404, "No product found");
-    const count = await Product.countDocuments();
+    const count = await Product.find(filter).countDocuments();
     const payload = {
       products,
       pagination: {

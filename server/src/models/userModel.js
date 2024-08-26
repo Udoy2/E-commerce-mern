@@ -29,8 +29,7 @@ const useSchema = new Schema({
         set: (v)=>bcrypt.hashSync(v, bcrypt.genSaltSync(10))
     },
     image:{
-        type: Buffer,
-        contentType:String,
+        type: String,
         require: [true,'image is required'],
     },
     address:{

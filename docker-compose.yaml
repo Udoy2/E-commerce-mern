@@ -5,5 +5,5 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - ./server:/app
+      - ./server:/server
       - /home/hulk/Desktop/projects/E-commerce-mern/server/node_modules

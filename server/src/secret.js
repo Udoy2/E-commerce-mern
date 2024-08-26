@@ -7,6 +7,11 @@ const jwtAccessKey = process.env.JWT_ACCESS_KEY || "DUMMY"
 const smtpUsername = process.env.SMTP_USERNAME || ""
 const smtpPasword = process.env.SMTP_PASSWORD || ""
 const clientUrl = process.env.CLIENT_URL || ""
+const cloudinary_name = process.env.CLOUDINARY_NAME||""
+const cloudinary_api_key = process.env.CLOUDINARY_API_KEY||""
+const cloudinary_api_secrect = process.env.CLOUDINARY_API_SECRET||""
+
+
 
 module.exports = {
     serverPort,
@@ -16,5 +21,8 @@ module.exports = {
     smtpUsername,
     smtpPasword,
     clientUrl,
-    jwtAccessKey
+    jwtAccessKey,
+    cloudinary_name,
+    cloudinary_api_key,
+    cloudinary_api_secrect
 }

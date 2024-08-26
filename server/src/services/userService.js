@@ -4,6 +4,8 @@ const { successResponse } = require("../controller/responseController");
 const { emailWithNodeMailer } = require("../helper/email");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
 const { jwtActivationKey, clientUrl } = require("../secret");
+const { uploadImageToCloudinary } = require("../helper/cloudinaryHelper");
+const { deleteImage } = require("../helper/deleteImage");
 
 const findUsers = async (search, limit, page) => {
   try {
@@ -43,7 +45,7 @@ const handleEmailAndGenerateToken = async (
   password,
   phone,
   address,
-  imageBufferString,
+  imageBufferString
 ) => {
   try {
     const userExists = await User.exists({ email: email });
@@ -80,4 +82,15 @@ const handleEmailAndGenerateToken = async (
   }
 };
 
-module.exports = { findUsers ,handleEmailAndGenerateToken};
+const handleAvatarUpload = async (id,imagePath) => {
+  try {
+    const secure_url = await uploadImageToCloudinary(imagePath);
+    const update = { image: secure_url };
+    await User.findByIdAndUpdate(id, update);
+    await deleteImage(imagePath);
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { findUsers, handleEmailAndGenerateToken,handleAvatarUpload };

@@ -8,8 +8,13 @@ const bcrypt = require("bcryptjs");
 const {
   findUsers,
   handleEmailAndGenerateToken,
+  handleAvatarUpload,
 } = require("../services/userService");
 const { checkUserExists } = require("../helper/checkUserExists");
+const { cloudinarry, cloudinary } = require("../config/cloudinary");
+const { log } = require("winston");
+const { deleteImage } = require("../helper/deleteImage");
+const { uploadImageToCloudinary } = require("../helper/cloudinaryHelper");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
@@ -75,6 +80,25 @@ const processRegister = async (req, res, next) => {
       payload: {
         token,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const uploadAvatar = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const image = req.file;
+    console.log(image);
+    
+    if(image){
+      await handleAvatarUpload(id,image.path)
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message:
+        "Avatar uploaded successfully",
     });
   } catch (error) {
     next(error);
@@ -242,4 +266,5 @@ module.exports = {
   handleBanUserById,
   handleUnBanUserById,
   handleUpdatePassword,
+  uploadAvatar
 };
