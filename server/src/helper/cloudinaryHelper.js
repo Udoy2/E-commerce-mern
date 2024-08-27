@@ -9,6 +9,10 @@ const uploadImageToCloudinary = async (imagePath,folderLocation) => {
 const deleteImageFromCloudinary = async (imagePath,folderLocation) => {
   const publicID = getFileNameWithoutExtension(imagePath);
       const {result} = await cloudinary.uploader.destroy(`${folderLocation}/${publicID}`)
+      console.log(result);
+      if(result == 'not found'){
+        return 'not found'
+      }
       if(result != 'ok'){
         throw new Error(
           'image was not deleted successfully from cloudinary, please try again'
