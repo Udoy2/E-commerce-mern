@@ -1,12 +1,20 @@
 const { cloudinary } = require("../config/cloudinary");
 
-const uploadImageToCloudinary = async (imagePath) => {
+const uploadImageToCloudinary = async (imagePath,folderLocation) => {
     const response = await cloudinary.uploader.upload(imagePath,{
-        folder:'ecommerceMern',
+        folder:folderLocation,
       });
       return response.secure_url
 }
-
+const deleteImageFromCloudinary = async (imagePath,folderLocation) => {
+  const publicID = getFileNameWithoutExtension(imagePath);
+      const {result} = await cloudinary.uploader.destroy(`${folderLocation}/${publicID}`)
+      if(result != 'ok'){
+        throw new Error(
+          'User image was not deleted successfully from cloudinary, please try again'
+        )
+      }
+}
 function getFileNameWithoutExtension(url) {
     // Use URL to get the pathname
     const path = new URL(url).pathname;
@@ -20,4 +28,4 @@ function getFileNameWithoutExtension(url) {
     return fileNameWithoutExtension;
   }
 
-module.exports = {uploadImageToCloudinary,getFileNameWithoutExtension}
+module.exports = {uploadImageToCloudinary,getFileNameWithoutExtension,deleteImageFromCloudinary}

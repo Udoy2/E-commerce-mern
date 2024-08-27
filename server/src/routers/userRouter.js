@@ -8,7 +8,7 @@ const userRouter = express.Router();
 
 userRouter.get('/',isLoggedIn,isAdmin,getUsers);
 userRouter.get('/:id',isLoggedIn,getUser);
-userRouter.put('/:id',isLoggedIn,upload.single("image"),updateUserById);
+userRouter.put('/:id',isLoggedIn,userUpload.single("image"),updateUserById);
 userRouter.delete('/:id',isLoggedIn,deleteUser);
 userRouter.put('/banUser/:id',isLoggedIn,isAdmin,handleBanUserById);
 userRouter.put('/unbanUser/:id',isLoggedIn,isAdmin,handleUnBanUserById);

@@ -14,7 +14,7 @@ const { checkUserExists } = require("../helper/checkUserExists");
 const { cloudinarry, cloudinary } = require("../config/cloudinary");
 const { log } = require("winston");
 const { deleteImage } = require("../helper/deleteImage");
-const { uploadImageToCloudinary, getFileNameWithoutExtension } = require("../helper/cloudinaryHelper");
+const { uploadImageToCloudinary, getFileNameWithoutExtension, deleteImageFromCloudinary } = require("../helper/cloudinaryHelper");
 const getUsers = async (req, res, next) => {
   try {
     const search = req.query.search || "";
@@ -52,13 +52,7 @@ const deleteUser = async (req, res, next) => {
     const option = { password: 0 };
     const user = await findWithID(User, id, { options: option });
     if(user && user.image){
-      const publicID = getFileNameWithoutExtension(user.image);
-      const {result} = await cloudinary.uploader.destroy(`ecommerceMern/${publicID}`)
-      if(result != 'ok'){
-        throw new Error(
-          'User image was not deleted successfully from cloudinary, please try again'
-        )
-      }
+      await deleteImageFromCloudinary(user.image,'ecommerceMern/users')
       
     }
     await User.findByIdAndDelete({ _id: id, isAdmin: false });
@@ -97,10 +91,9 @@ const uploadAvatar = async (req, res, next) => {
   try {
     const id = req.params.id
     const image = req.file;
-    console.log(image);
     
     if(image){
-      await handleAvatarUpload(id,image.path)
+      await handleAvatarUpload(id,image.path,'ecommerceMern/users')
     }
 
     return successResponse(res, {
@@ -136,7 +129,7 @@ const activateUserAccount = async (req, res, next) => {
 const updateUserById = async (req, res, next) => {
   try {
     const userID = req.params.id;
-    await findWithID(User, userID, {});
+    const user = await findWithID(User, userID, {});
     const updateOptions = { new: true, runValidators: true, context: "query" };
     const updates = {};
     if (req.body.name) {
@@ -155,11 +148,18 @@ const updateUserById = async (req, res, next) => {
       throw createHttpError(400, "Email can not be updated!");
     }
     const image = req.file;
+    console.log(image);
+    
     if (image) {
       if (image.size > 2 * 1024 * 1024) {
         throw createHttpError(400, "Image file cant exceede 2mb");
       }
-      updates.image = image.buffer.toString("base64");
+      if(user.image){
+        
+        await deleteImageFromCloudinary(user.image,'ecommerceMern/users');
+      }
+      const secure_url = await uploadImageToCloudinary(image.path,'ecommerceMern/users');
+      updates.image = secure_url
     }
 
     const updatedUser = await User.findByIdAndUpdate(

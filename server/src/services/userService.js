@@ -82,12 +82,11 @@ const handleEmailAndGenerateToken = async (
   }
 };
 
-const handleAvatarUpload = async (id,imagePath) => {
+const handleAvatarUpload = async (id,imagePath,folderLocation) => {
   try {
-    const secure_url = await uploadImageToCloudinary(imagePath);
+    const secure_url = await uploadImageToCloudinary(imagePath,folderLocation);
     const update = { image: secure_url };
     await User.findByIdAndUpdate(id, update);
-    await deleteImage(imagePath);
   } catch (error) {
     throw error;
   }
