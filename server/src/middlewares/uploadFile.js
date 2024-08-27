@@ -4,9 +4,8 @@ const {
   ALLOWED_FILE_TYPES,
 } = require("../config");
 const path = require('path');
-const storage = multer.memoryStorage();
 
-const storage1 = multer.diskStorage({
+const storage = multer.diskStorage({
   // destination: function (req, file, cb) {
   //   cb(null, 'public/images/users'); // Set upload directory
   // },
@@ -28,13 +27,13 @@ const fileFilter = (req, file, cb) => {
   cb(null,true)
 };
 
-const upload = multer({
+const uploadProduct = multer({
   storage: storage,
   fileFilter:fileFilter,
 });
 
 const userUpload = multer({
-  storage:storage1,
+  storage:storage,
   fileFilter:fileFilter
 })
-module.exports = { upload,userUpload };
+module.exports = { uploadProduct,userUpload };

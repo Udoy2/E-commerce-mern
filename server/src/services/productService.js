@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const Product = require("../models/productModel");
 const slugify = require("slugify");
+const { deleteImageFromCloudinary, uploadImageToCloudinary } = require("../helper/cloudinaryHelper");
 
 const createproduct = async (
   name,
@@ -33,13 +34,11 @@ const createproduct = async (
     throw error;
   }
 };
-const getProducts = async (search,page, limit) => {
+const getProducts = async (search, page, limit) => {
   try {
     const searchRegExp = new RegExp(".*" + search + ".*", "i");
     const filter = {
-      $or: [
-        { name: { $regex: searchRegExp } },
-      ],
+      $or: [{ name: { $regex: searchRegExp } }],
     };
     const products = await Product.find(filter)
       .populate("category")
@@ -85,7 +84,10 @@ const updateProductService = async (
   try {
     const updateOptions = { new: true, runValidators: true, context: "query" };
     const updates = {};
-
+    const oldProduct = await Product.findOne(
+      { slug },
+    );
+    if(!oldProduct) throw Error('No product found with this slug');
     // Populate the updates object only if the corresponding field is provided
     if (name) {
       updates.name = name;
@@ -103,8 +105,9 @@ const updateProductService = async (
           "File is too large, it must be less than 2mb"
         );
       }
-      const imageBufferString = image.buffer.toString("base64");
-      updates.image = imageBufferString;
+      const secure_url=await uploadImageToCloudinary(image.path,'ecommerceMern/products');
+      updates.image = secure_url;
+      if(oldProduct.image) await deleteImageFromCloudinary(oldProduct.image,'ecommerceMern/products')
     }
 
     // Find and update the product based on the slug
@@ -124,6 +127,9 @@ const deleteProductService = async (slug) => {
   try {
     const product = await Product.findOne({ slug });
     if (!product) throw createHttpError(404, "No product found");
+    if (product.image) {
+      await deleteImageFromCloudinary(product.image, "ecommerceMern/products");
+    }
     await Product.deleteOne({ slug });
   } catch (error) {
     throw error;

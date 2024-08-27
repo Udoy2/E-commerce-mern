@@ -1,6 +1,5 @@
 const express = require("express");
-const { upload } = require("../middlewares/uploadFile");
-const { validateUserRegistration } = require("../validators/auth");
+const { uploadProduct } = require("../middlewares/uploadFile");
 const { runValidation } = require("../validators");
 const { isLoggedIn, isLoggedOUT, isAdmin } = require("../middlewares/auth");
 const {
@@ -17,7 +16,7 @@ const productRouter = express.Router();
 productRouter.post(
   "/",
   isLoggedIn,
-  upload.single("image"),
+  uploadProduct.single("image"),
   validateProduct,
   runValidation,
   handleCreateProduct
@@ -25,6 +24,6 @@ productRouter.post(
 productRouter.get("/", handleGetProduct);
 productRouter.get("/:slug", handleGetSingleProduct);
 productRouter.delete("/:slug", isLoggedIn, deleteProduct);
-productRouter.put("/:slug", isLoggedIn, upload.single("image"), updateProduct);
+productRouter.put("/:slug", isLoggedIn, uploadProduct.single("image"), updateProduct);
 
 module.exports = { productRouter };

@@ -55,8 +55,7 @@ const productSchema = new Schema({
         default:0,
     },
     image:{
-        type: Buffer,
-        contentType:String,
+        type: String,
         require: [false,'image is required'],
     },
     category:{

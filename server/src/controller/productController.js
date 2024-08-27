@@ -7,6 +7,7 @@ const {
   deleteProductService,
   updateProductService,
 } = require("../services/productService");
+const { uploadImageToCloudinary } = require("../helper/cloudinaryHelper");
 
 const handleCreateProduct = async (req, res, next) => {
   try {
@@ -18,7 +19,7 @@ const handleCreateProduct = async (req, res, next) => {
     if (image.size > 1024 * 1024 * 2) {
       throw createHttpError(400, "File is too large, it must be less than 2mb");
     }
-    const imageBufferString = image.buffer.toString("base64");
+    const secure_url=await uploadImageToCloudinary(image.path,'ecommerceMern/products');
     const product = await createproduct(
       name,
       description,
@@ -26,7 +27,7 @@ const handleCreateProduct = async (req, res, next) => {
       quantity,
       shipping,
       category,
-      imageBufferString
+      secure_url
     );
 
     return successResponse(res, {

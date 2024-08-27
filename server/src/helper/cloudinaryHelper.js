@@ -11,7 +11,7 @@ const deleteImageFromCloudinary = async (imagePath,folderLocation) => {
       const {result} = await cloudinary.uploader.destroy(`${folderLocation}/${publicID}`)
       if(result != 'ok'){
         throw new Error(
-          'User image was not deleted successfully from cloudinary, please try again'
+          'image was not deleted successfully from cloudinary, please try again'
         )
       }
 }
